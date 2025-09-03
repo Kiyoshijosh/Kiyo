@@ -11,7 +11,7 @@ local mouse = plr:GetMouse()
 
 -- Configuration with larger sizes
 local CONFIG = {
-    ButtonSize = 80,  -- Increased from 64
+    ButtonSize = 90,  -- Increased from 64
     ButtonPosition = UDim2.new(1, -110, 1, -110),  -- Adjusted for larger size
     ButtonColor = Color3.fromRGB(34, 34, 38),
     ButtonActiveColor = Color3.fromRGB(38, 48, 60),
