@@ -1,18 +1,24 @@
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Pass the Bomb",
+    Title = "Kiyofineshyt X Pass the Bomb",
     SubTitle = "by Kiyo",
-    TabWidth = 120,
-    Size = UDim2.fromOffset(300, 150),
+    TabWidth = 160,
+    Size = UDim2.fromOffset(470, 260),
     Acrylic = false,
     Theme = "Darker",
     MinimizeKey = Enum.KeyCode.LeftAlt
 })
 
 local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "" }),
+    Inf = Window:AddTab({ Title = "Info", Icon = "rbxassetid://79247048304044" }),
+    Main = Window:AddTab({ Title = "Main", Icon = "rbxassetid://106204366458572" }),
 }
+
+Tabs.Inf:AddParagraph({
+    Title = "WELCOME TO KIYO'S HEAVEN",
+    Content = "PASS THE BOMB SCRIPT"
+})
 
 --hitbox
 
@@ -28,9 +34,7 @@ local function resizeCollisionPart(playerName)
         if playerModel then
             local collisionPart = playerModel:FindFirstChild("CollisionPart")
             if collisionPart and collisionPart:IsA("BasePart") then
-                -- Change the part shape to a sphere (ball)
-                collisionPart.Shape = Enum.PartType.Ball
-                collisionPart.Size = Vector3.new(5.0, 5.0, 5.0) -- Changed back to 5.0
+                collisionPart.Size = Vector3.new(4.6, 4.6, 4.6)
                 collisionPart.Color = Color3.fromRGB(0, 0, 0)
                 collisionPart.Transparency = 0.9
                 collisionPart.CanCollide = true
@@ -99,11 +103,11 @@ Options.ToggleHit:SetValue(false)
 
 --hitbox input
 
-local maxHitboxSize = 5.0 -- Changed back to 5.0
+local maxHitboxSize = 4.6
 
 local Input = Tabs.Main:AddInput("Input", {
     Title = "Hitbox Size",
-    Default = "5.0", -- Set default back to 5.0
+    Default = "",
     Placeholder = "Enter size",
     Numeric = true, 
     Finished = false, 
