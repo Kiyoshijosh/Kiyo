@@ -1,0 +1,113 @@
+-- Enhanced Draggable FPS Counter with Arcade Font
+
+-- Instances:
+local Converted = {
+	["_ScreenGui"] = Instance.new("ScreenGui"),
+	["_Frame"] = Instance.new("Frame"),
+	["_TextLabel"] = Instance.new("TextLabel"),
+	["_UIStroke"] = Instance.new("UIStroke"),
+}
+
+-- Properties:
+Converted["_ScreenGui"].Name = "FPSCounter"
+Converted["_ScreenGui"].Parent = game:GetService("CoreGui")
+Converted["_ScreenGui"].ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+Converted["_ScreenGui"].ResetOnSpawn = false
+
+-- Create a small frame to make dragging easier
+Converted["_Frame"].Name = "DragFrame"
+Converted["_Frame"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Converted["_Frame"].BackgroundTransparency = 1
+Converted["_Frame"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_Frame"].BorderSizePixel = 0
+Converted["_Frame"].Position = UDim2.new(0, 10, 0, 10)
+Converted["_Frame"].Size = UDim2.new(0, 70, 0, 25)
+Converted["_Frame"].Parent = Converted["_ScreenGui"]
+
+Converted["_TextLabel"].Name = "FPSLabel"
+Converted["_TextLabel"].Font = Enum.Font.Arcade
+Converted["_TextLabel"].Text = "FPS: 0"
+Converted["_TextLabel"].TextColor3 = Color3.fromRGB(57, 255, 20) -- Arcade green
+Converted["_TextLabel"].TextScaled = false
+Converted["_TextLabel"].TextSize = 18
+Converted["_TextLabel"].TextWrapped = false
+Converted["_TextLabel"].BackgroundColor3 = Color3.fromRGB(20, 20, 20) -- Dark background
+Converted["_TextLabel"].BackgroundTransparency = 0.3
+Converted["_TextLabel"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+Converted["_TextLabel"].BorderSizePixel = 0
+Converted["_TextLabel"].Position = UDim2.new(0, 0, 0, 0)
+Converted["_TextLabel"].Size = UDim2.new(1, 0, 1, 0)
+Converted["_TextLabel"].Parent = Converted["_Frame"]
+
+Converted["_UIStroke"].Color = Color3.fromRGB(0, 0, 0)
+Converted["_UIStroke"].Thickness = 1.5
+Converted["_UIStroke"].Parent = Converted["_TextLabel"]
+
+-- FPS Counter Script
+local RunService = game:GetService("RunService")
+local textLabel = Converted["_TextLabel"]
+local dragFrame = Converted["_Frame"]
+
+local fps = 0
+local frameCount = 0
+local lastTime = 0
+
+-- Function to update FPS
+local function updateFPS()
+	frameCount = frameCount + 1
+	local currentTime = os.clock()
+	
+	if currentTime - lastTime >= 1 then
+		fps = math.floor(frameCount / (currentTime - lastTime) + 0.5)
+		frameCount = 0
+		lastTime = currentTime
+		textLabel.Text = string.format("FPS: %d", fps)
+		
+		-- Change color based on FPS
+		if fps >= 60 then
+			textLabel.TextColor3 = Color3.fromRGB(57, 255, 20) -- Green
+		elseif fps >= 30 then
+			textLabel.TextColor3 = Color3.fromRGB(255, 216, 61) -- Yellow
+		else
+			textLabel.TextColor3 = Color3.fromRGB(255, 68, 68) -- Red
+		end
+	end
+end
+
+-- Dragging functionality
+local dragging = false
+local dragInput, dragStart, startPos
+
+local function update(input)
+	local delta = input.Position - dragStart
+	dragFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+dragFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = dragFrame.Position
+		
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+end)
+
+dragFrame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+		dragInput = input
+	end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		update(input)
+	end
+end)
+
+-- Connect to RenderStepped for FPS measurement
+RunService.RenderStepped:Connect(updateFPS)
