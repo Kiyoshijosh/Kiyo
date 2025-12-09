@@ -17,7 +17,7 @@ local Tabs = {
 
 Tabs.Inf:AddParagraph({
     Title = "WELCOME TO KIYO'S HEAVEN",
-    Content = "PASS THE BOMB SCRIPT"
+    Content = "PASS THE BOMB"
 })
 
 --hitbox
