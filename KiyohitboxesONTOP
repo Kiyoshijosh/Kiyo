@@ -34,7 +34,7 @@ local function resizeCollisionPart(playerName)
         if playerModel then
             local collisionPart = playerModel:FindFirstChild("CollisionPart")
             if collisionPart and collisionPart:IsA("BasePart") then
-                collisionPart.Size = Vector3.new(4.2, 4.2, 4.2)
+                collisionPart.Size = Vector3.new(4.0, 4.0, 4.0)
                 collisionPart.Color = Color3.fromRGB(0, 0, 0)
                 collisionPart.Transparency = 0.9
                 collisionPart.CanCollide = true
@@ -103,7 +103,7 @@ Options.ToggleHit:SetValue(false)
 
 --hitbox input
 
-local maxHitboxSize = 4.2
+local maxHitboxSize = 4.0
 
 local Input = Tabs.Main:AddInput("Input", {
     Title = "Hitbox Size",
