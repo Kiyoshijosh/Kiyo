@@ -36,7 +36,7 @@ local function resizeCollisionPart(playerName)
             if collisionPart and collisionPart:IsA("BasePart") then
                 collisionPart.Size = Vector3.new(3.8, 3.8, 3.8)
                 collisionPart.Color = Color3.fromRGB(0, 0, 0)
-                collisionPart.Transparency = 1.0
+                collisionPart.Transparency = 0.1
                 collisionPart.CanCollide = true
             end
         end
