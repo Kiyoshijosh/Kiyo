@@ -1,4 +1,4 @@
--- Enhanced ShiftLock UI without tooltip and with larger UI
+-- Enhanced ShiftLock UI without tooltip and with larger UI (Red Theme)
 local ref = cloneref or function(x) return x end
 local S = function(n) return ref(game:GetService(n)) end
 
@@ -9,17 +9,17 @@ local Plrs, Tw, UIS, RS, Wk, CG, TS, HS, LPS =
 local plr = Plrs.LocalPlayer
 local mouse = plr:GetMouse()
 
--- Configuration with larger sizes
+-- Configuration with larger sizes (Red theme)
 local CONFIG = {
-    ButtonSize = 90,  -- Increased from 64
-    ButtonPosition = UDim2.new(1, -110, 1, -110),  -- Adjusted for larger size
-    ButtonColor = Color3.fromRGB(34, 34, 38),
-    ButtonActiveColor = Color3.fromRGB(38, 48, 60),
-    StrokeColor = Color3.fromRGB(0, 140, 255),
-    StrokeActiveColor = Color3.fromRGB(0, 200, 255),
-    IconColor = Color3.fromRGB(255, 255, 255),
-    IconActiveColor = Color3.fromRGB(0, 200, 255),
-    ShadowOffset = 8,  -- Increased from 6
+    ButtonSize = 90,
+    ButtonPosition = UDim2.new(1, -110, 1, -110),
+    ButtonColor = Color3.fromRGB(34, 34, 38),          -- Dark background
+    ButtonActiveColor = Color3.fromRGB(58, 42, 42),    -- Dark red when active
+    StrokeColor = Color3.fromRGB(255, 0, 0),           -- Red stroke
+    StrokeActiveColor = Color3.fromRGB(255, 100, 100), -- Lighter red when active
+    IconColor = Color3.fromRGB(255, 255, 255),         -- White icon
+    IconActiveColor = Color3.fromRGB(255, 80, 80),     -- Red icon when active
+    ShadowOffset = 8,  -- Not used (shadow removed)
     PulseEffect = true,
     ShineEffect = true,
     Draggable = true,
@@ -153,7 +153,7 @@ cr.CornerRadius = UDim.new(1, 0)
 cr.Parent = btn
 
 local strk = Instance.new("UIStroke")
-strk.Thickness = 3  -- Increased from 2
+strk.Thickness = 3
 strk.Color = CONFIG.StrokeColor
 strk.Transparency = 0.25
 strk.Parent = btn
@@ -172,49 +172,11 @@ icn.Name = "Icn"
 icn.BackgroundTransparency = 1
 icn.AnchorPoint = Vector2.new(0.5, 0.5)
 icn.Position = UDim2.fromScale(0.5, 0.5)
-icn.Size = UDim2.fromScale(0.7, 0.7)  -- Increased from 0.62
+icn.Size = UDim2.fromScale(0.7, 0.7)
 icn.Image = "rbxasset://textures/ui/mouseLock_off.png"
 icn.ImageColor3 = CONFIG.IconColor
 icn.ScaleType = Enum.ScaleType.Fit
 icn.Parent = btn
-
--- Larger shadow effect
-local shd = Instance.new("Frame")
-shd.Name = "Shd"
-shd.AnchorPoint = Vector2.new(0.5, 0.5)
-shd.Position = UDim2.new(btn.Position.X.Scale, btn.Position.X.Offset, btn.Position.Y.Scale, btn.Position.Y.Offset + CONFIG.ShadowOffset)
-shd.Size = UDim2.new(btn.Size.X.Scale, btn.Size.X.Offset + 16, btn.Size.Y.Scale, btn.Size.Y.Offset + 16)  -- Increased from +12
-shd.BackgroundColor3 = Color3.new(0, 0, 0)
-shd.BackgroundTransparency = 0.8
-shd.ZIndex = 0
-shd.Parent = gui
-
-local shdC = Instance.new("UICorner")
-shdC.CornerRadius = UDim.new(1, 0)
-shdC.Parent = shd
-
--- Settings button (larger)
-local settingsBtn = Instance.new("TextButton")
-settingsBtn.Name = "Settings"
-settingsBtn.AnchorPoint = Vector2.new(0, 0)
-settingsBtn.Position = UDim2.new(0, -8, 0, -8)  -- Adjusted position
-settingsBtn.Size = UDim2.fromOffset(22, 22)  -- Increased from 18
-settingsBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 110)
-settingsBtn.AutoButtonColor = true
-settingsBtn.Text = "⚙"
-settingsBtn.TextScaled = true
-settingsBtn.TextColor3 = Color3.new(1, 1, 1)
-settingsBtn.Visible = false
-settingsBtn.Parent = btn
-
-local settingsC = Instance.new("UICorner")
-settingsC.CornerRadius = UDim.new(1, 0)
-settingsC.Parent = settingsBtn
-
-local settingsS = Instance.new("UIStroke")
-settingsS.Thickness = 1
-settingsS.Transparency = 0.3
-settingsS.Parent = settingsBtn
 
 -- Scale animation
 local sc = Instance.new("UIScale")
@@ -247,7 +209,6 @@ local function setupAutoHide()
             
             if btn.Visible ~= shouldBeVisible then
                 btn.Visible = shouldBeVisible
-                shd.Visible = shouldBeVisible
             end
         end)
         
@@ -256,7 +217,6 @@ local function setupAutoHide()
             lastInteraction = tick()
             if not btn.Visible then
                 btn.Visible = true
-                shd.Visible = true
             end
         end
         
@@ -266,7 +226,6 @@ local function setupAutoHide()
         btn.MouseButton1Up:Connect(updateInteraction)
     else
         btn.Visible = true
-        shd.Visible = true
     end
 end
 
@@ -276,14 +235,12 @@ setupAutoHide()
 local over = false
 btn.MouseEnter:Connect(function()
     over = true
-    Tw:Create(btn, tH, { Size = UDim2.fromOffset(CONFIG.ButtonSize + 8, CONFIG.ButtonSize + 8) }):Play()  -- Increased from +6
-    settingsBtn.Visible = true
+    Tw:Create(btn, tH, { Size = UDim2.fromOffset(CONFIG.ButtonSize + 8, CONFIG.ButtonSize + 8) }):Play()
 end)
 
 btn.MouseLeave:Connect(function()
     over = false
     Tw:Create(btn, tH, { Size = UDim2.fromOffset(CONFIG.ButtonSize, CONFIG.ButtonSize) }):Play()
-    settingsBtn.Visible = false
 end)
 
 -- Pulse effect
@@ -309,14 +266,14 @@ end
 
 -- Button click effects
 btn.MouseButton1Down:Connect(function()
-    Tw:Create(btn, tP, { Size = UDim2.fromOffset(CONFIG.ButtonSize - 8, CONFIG.ButtonSize - 8) }):Play()  -- Increased from -6
-    Tw:Create(strk, tP, { Thickness = 4, Transparency = 0.1 }):Play()  -- Increased from 3
+    Tw:Create(btn, tP, { Size = UDim2.fromOffset(CONFIG.ButtonSize - 8, CONFIG.ButtonSize - 8) }):Play()
+    Tw:Create(strk, tP, { Thickness = 4, Transparency = 0.1 }):Play()
     pulse()
 end)
 
 btn.MouseButton1Up:Connect(function()
-    Tw:Create(btn, tP, { Size = over and UDim2.fromOffset(CONFIG.ButtonSize + 8, CONFIG.ButtonSize + 8) or UDim2.fromOffset(CONFIG.ButtonSize, CONFIG.ButtonSize) }):Play()  -- Increased from +6
-    Tw:Create(strk, tP, { Thickness = 3, Transparency = 0.25 }):Play()  -- Increased from 2
+    Tw:Create(btn, tP, { Size = over and UDim2.fromOffset(CONFIG.ButtonSize + 8, CONFIG.ButtonSize + 8) or UDim2.fromOffset(CONFIG.ButtonSize, CONFIG.ButtonSize) }):Play()
+    Tw:Create(strk, tP, { Thickness = 3, Transparency = 0.25 }):Play()
 end)
 
 -- Shine effect
@@ -333,7 +290,7 @@ local function shn()
     local b = Instance.new("Frame")
     b.AnchorPoint = Vector2.new(0.5, 0.5)
     b.Position = UDim2.fromScale(-0.2, 0.5)
-    b.Size = UDim2.new(0, 12, 1.4, 0)  -- Increased from 10
+    b.Size = UDim2.new(0, 12, 1.4, 0)
     b.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     b.BackgroundTransparency = 0.85
     local g = Instance.new("UIGradient")
@@ -360,8 +317,8 @@ local function clampUD(pos)
     local half = btn.AbsoluteSize / 2
     local absX = pos.X.Scale * scr.X + pos.X.Offset
     local absY = pos.Y.Scale * scr.Y + pos.Y.Offset
-    local x = math.clamp(absX, half.X + 10, scr.X - half.X - 10)  -- Increased from 8
-    local y = math.clamp(absY, half.Y + 10, scr.Y - half.Y - 10)  -- Increased from 8
+    local x = math.clamp(absX, half.X + 10, scr.X - half.X - 10)
+    local y = math.clamp(absY, half.Y + 10, scr.Y - half.Y - 10)
     return UDim2.new(pos.X.Scale, x - pos.X.Scale * scr.X, pos.Y.Scale, y - pos.Y.Scale * scr.Y)
 end
 
@@ -391,12 +348,6 @@ if CONFIG.Draggable then
     end)
 end
 
--- Update shadow position to follow button
-RS.RenderStepped:Connect(function()
-    shd.Position = UDim2.new(btn.Position.X.Scale, btn.Position.X.Offset, btn.Position.Y.Scale, btn.Position.Y.Offset + CONFIG.ShadowOffset)
-    shd.Size = UDim2.new(btn.Size.X.Scale, btn.Size.X.Offset + 16, btn.Size.Y.Scale, btn.Size.Y.Offset + 16)  -- Increased from +12
-end)
-
 -- Toggle shift lock functionality
 local on = false
 local icOn, icOff = "rbxasset://textures/ui/mouseLock_on.png", "rbxasset://textures/ui/mouseLock_off.png"
@@ -406,7 +357,7 @@ local function apply(v)
     on = v
     lockMouse(v)
     faceCam(h, r, v)
-    Tw:Create(strk, tT, { Color = v and CONFIG.StrokeActiveColor or CONFIG.StrokeColor, Thickness = v and 4 or 3 }):Play()  -- Increased from 3/2
+    Tw:Create(strk, tT, { Color = v and CONFIG.StrokeActiveColor or CONFIG.StrokeColor, Thickness = v and 4 or 3 }):Play()
     Tw:Create(btn, tT, { BackgroundColor3 = v and CONFIG.ButtonActiveColor or CONFIG.ButtonColor }):Play()
     Tw:Create(icn, tT, { ImageColor3 = v and CONFIG.IconActiveColor or CONFIG.IconColor }):Play()
     icn.Image = v and icOn or icOff
@@ -424,12 +375,6 @@ end)
 
 btn.Activated:Connect(function()
     apply(not on)
-end)
-
--- Settings button functionality
-settingsBtn.Activated:Connect(function()
-    -- Placeholder for settings menu
-    print("Settings button clicked - would open settings menu here")
 end)
 
 -- Reapply shift lock when character changes
@@ -451,8 +396,8 @@ end)
 task.spawn(function()
     local notification = Instance.new("Frame")
     notification.Name = "Notification"
-    notification.Size = UDim2.fromOffset(220, 44)  -- Increased size
-    notification.Position = UDim2.new(0.5, -110, 0, 10)  -- Adjusted position
+    notification.Size = UDim2.fromOffset(220, 44)
+    notification.Position = UDim2.new(0.5, -110, 0, 10)
     notification.AnchorPoint = Vector2.new(0.5, 0)
     notification.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
     notification.BackgroundTransparency = 0.8
@@ -473,7 +418,7 @@ task.spawn(function()
     notifText.BackgroundTransparency = 1
     notifText.Text = "ShiftLock UI Loaded (Press " .. tostring(CONFIG.CustomKeybind) .. ")"
     notifText.TextColor3 = Color3.fromRGB(220, 220, 220)
-    notifText.TextSize = 16  -- Increased from 14
+    notifText.TextSize = 16
     notifText.Font = Enum.Font.Gotham
     notifText.Parent = notification
     
