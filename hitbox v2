@@ -1,0 +1,175 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "Kiyofineshyt X Pass the Bomb",
+    SubTitle = "by Kiyo",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(470, 260),
+    Acrylic = false,
+    Theme = "Darker",
+    MinimizeKey = Enum.KeyCode.LeftAlt
+})
+
+local Tabs = {
+    Inf = Window:AddTab({ Title = "Info", Icon = "rbxassetid://79247048304044" }),
+    Main = Window:AddTab({ Title = "Main", Icon = "rbxassetid://106204366458572" }),
+}
+
+Tabs.Inf:AddParagraph({
+    Title = "WELCOME TO KIYO'S HEAVEN",
+    Content = "PASS THE BOMB SCRIPT"
+})
+
+-- Hitbox variables
+local localPlayer = game.Players.LocalPlayer
+local localPlayerName = localPlayer.Name
+local Options = {}
+local hitboxConnections = {}
+local maxHitboxSize = 4.7
+local currentHitboxSize = 4.7 -- Default size
+
+local function resizeCollisionPart(playerName)
+    if playerName ~= localPlayerName then
+        local playerModel = game.Workspace:FindFirstChild(playerName)
+        if playerModel then
+            local collisionPart = playerModel:FindFirstChild("CollisionPart")
+            if collisionPart and collisionPart:IsA("BasePart") then
+                collisionPart.Size = Vector3.new(currentHitboxSize, currentHitboxSize, currentHitboxSize)
+                collisionPart.Transparency = 0.9
+                collisionPart.CanCollide = true
+            end
+        end
+    end
+end
+
+local function deactivateCollisionPart(playerName)
+    if playerName ~= localPlayerName then
+        local playerModel = game.Workspace:FindFirstChild(playerName)
+        if playerModel then
+            local collisionPart = playerModel:FindFirstChild("CollisionPart")
+            if collisionPart and collisionPart:IsA("BasePart") then
+                collisionPart.Transparency = 1 -- Fully invisible when off
+                collisionPart.CanCollide = false
+                -- Optionally reset size? For now, leave size as is or reset to default
+                -- collisionPart.Size = Vector3.new(2, 2, 2) -- example default
+            end
+        end
+    end
+end
+
+local function monitorPlayers()
+    -- Ensure no duplicate connections
+    for _, connection in ipairs(hitboxConnections) do
+        if connection.Connected then
+            connection:Disconnect()
+        end
+    end
+    hitboxConnections = {}
+
+    -- Connect for existing players (excluding local player for size changes, but include for deactivation)
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player ~= localPlayer then
+            local connection = game:GetService("RunService").Heartbeat:Connect(function()
+                if Options.ToggleHit and Options.ToggleHit.Value then
+                    resizeCollisionPart(player.Name)
+                else
+                    deactivateCollisionPart(player.Name)
+                end
+            end)
+            table.insert(hitboxConnections, connection)
+        end
+    end
+
+    -- Connect for new players
+    local playerAddedConnection = game.Players.PlayerAdded:Connect(function(player)
+        if player ~= localPlayer then
+            local connection = game:GetService("RunService").Heartbeat:Connect(function()
+                if Options.ToggleHit and Options.ToggleHit.Value then
+                    resizeCollisionPart(player.Name)
+                else
+                    deactivateCollisionPart(player.Name)
+                end
+            end)
+            table.insert(hitboxConnections, connection)
+        end
+    end)
+    table.insert(hitboxConnections, playerAddedConnection)
+end
+
+local ToggleHit = Tabs.Main:AddToggle("ToggleHit", {Title = "Hitbox", Default = false })
+Options.ToggleHit = ToggleHit
+
+ToggleHit:OnChanged(function()
+    if Options.ToggleHit.Value then
+        monitorPlayers()
+    else
+        for _, connection in ipairs(hitboxConnections) do
+            if connection.Connected then
+                connection:Disconnect()
+            end
+        end
+        hitboxConnections = {}
+        
+        for _, player in pairs(game.Players:GetPlayers()) do
+            deactivateCollisionPart(player.Name)
+        end
+    end
+end)
+
+Options.ToggleHit:SetValue(false)
+
+-- Hitbox size input
+local Input = Tabs.Main:AddInput("Input", {
+    Title = "Hitbox Size",
+    Default = "",
+    Placeholder = "Enter size (max 4.7)",
+    Numeric = true, 
+    Finished = false, 
+    Callback = function(Value)
+        print("Input changed:", Value)
+    end
+})
+
+Input:OnChanged(function()
+    local newSize = tonumber(Input.Value)
+    if newSize then
+        if newSize > maxHitboxSize then
+            newSize = maxHitboxSize 
+            Input:SetValue(tostring(maxHitboxSize)) -- Update UI to show capped value
+        elseif newSize < 0 then
+            newSize = 0 
+            Input:SetValue("0")
+        end
+
+        currentHitboxSize = newSize
+
+        -- Apply size change to all valid players if hitbox is enabled
+        if Options.ToggleHit and Options.ToggleHit.Value then
+            for _, player in pairs(game.Players:GetPlayers()) do
+                if player.Name ~= localPlayerName then
+                    local playerModel = game.Workspace:FindFirstChild(player.Name)
+                    if playerModel then
+                        local collisionPart = playerModel:FindFirstChild("CollisionPart")
+                        if collisionPart and collisionPart:IsA("BasePart") then
+                            collisionPart.Size = Vector3.new(currentHitboxSize, currentHitboxSize, currentHitboxSize)
+                            collisionPart.Transparency = 0.9 -- Keep visible as per resize function
+                            collisionPart.CanCollide = true
+                        end
+                    end
+                end
+            end
+        end
+        print("Hitbox size updated to:", currentHitboxSize)
+    else
+        -- If input is empty or invalid, do nothing or reset to default
+        print("Invalid input for hitbox size.")
+    end
+end)
+
+Window:SelectTab(1)
+
+Fluent:Notify({
+    Title = "Kiyo's Pass the Bomb",
+    Content = "Script loaded successfully!",
+    Duration = 5
+})
