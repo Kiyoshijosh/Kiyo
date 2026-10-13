@@ -25,8 +25,8 @@ local localPlayer = game.Players.LocalPlayer
 local localPlayerName = localPlayer.Name
 local Options = {}
 local hitboxConnections = {}
-local maxHitboxSize = 4.7
-local currentHitboxSize = 4.7 -- Default size
+local maxHitboxSize = 4.5
+local currentHitboxSize = 4.5 -- Default size
 
 local function resizeCollisionPart(playerName)
     if playerName ~= localPlayerName then
@@ -122,7 +122,7 @@ Options.ToggleHit:SetValue(false)
 local Input = Tabs.Main:AddInput("Input", {
     Title = "Hitbox Size",
     Default = "",
-    Placeholder = "Enter size (max 4.7)",
+    Placeholder = "Enter size (max 4.5)",
     Numeric = true, 
     Finished = false, 
     Callback = function(Value)
